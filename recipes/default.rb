@@ -16,7 +16,20 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-include_recipe "xml::ruby"
+#
+
+# Install libxml "right now". By default it'll wait
+# until after the recipe has run, which is too late
+# to install chef_gem.
+node.set['build_essential']['compiletime'] = true
+include_recipe "build-essential"
+package('libxml2-dev').run_action(:install)
+package('libxslt1-dev').run_action(:install)
+
+chef_gem "nokogiri" do
+  action :install
+  version "1.5.10"
+end
 
 chef_gem "fog" do
   action :install
